@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مطعم الخير - نظام الطلبات</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #ff9a56, #ff6b35);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #d63031, #e17055);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* صفحة البيانات */
+        .welcome-content {
+            padding: 40px 20px;
+        }
+
+        .welcome-title {
+            font-size: 2em;
+            color: #2d3436;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            color: #2d3436;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1em;
+            background: #fdfdfd;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #fd79a8;
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .continue-btn:hover {
+            background: linear-gradient(135deg, #e84393, #d63031);
+        }
+
+        /* صفحة القائمة */
+        .customer-info {
+            background: linear-gradient(135deg, #a8e6cf, #88d8a3);
+            padding: 15px 20px;
+            color: #2d3436;
+            font-weight: bold;
+        }
+
+        .menu-section {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #2d3436;
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #fd79a8;
+            padding-bottom: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            border-radius: 10px;
+            border: 1px solid #fdcb6e;
+        }
+
+        .item-info h3 {
+            color: #2d3436;
+            margin-bottom: 5px;
+        }
+
+        .item-info p {
+            color: #636e72;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .item-price {
+            font-weight: bold;
+            color: #e17055;
+            font-size: 1.2em;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            border: 2px solid #fd79a8;
+            border-radius: 20px;
+            padding: 5px 10px;
+        }
+
+        .quantity-btn {
+            background: #fd79a8;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .quantity-display {
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .notes-section {
+            padding: 20px;
+            background: #fab1a0;
+        }
+
+        .notes-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            background: white;
+        }
+
+        .order-summary {
+            padding: 20px;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            text-align: center;
+        }
+
+        .total-price {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #fab1a0, #e17055);
+            color: white;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 30px;
+            color: #ddd6fe;
+        }
+
+        /* صفحة التأكيد */
+        .confirmation-content {
+            padding: 20px;
+        }
+
+        .confirmation-title {
+            font-size: 1.8em;
+            color: #2d3436;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .order-review {
+            background: #ffecd2;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .review-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .review-total {
+            background: #6c5ce7;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .confirmation-buttons {
+            text-align: center;
+        }
+
+        /* صفحة النجاح */
+        .success-content {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .success-icon {
+            font-size: 4em;
+            color: #00b894;
+            margin-bottom: 15px;
+        }
+
+        .order-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2d3436;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍕 مطعم الخير</h1>
+            <p>أطيب الأكلات الشعبية</p>
+        </div>
+
+        <!-- صفحة البيانات -->
+        <div id="welcome-page" class="page active">
+            <div class="welcome-content">
+                <h2 class="welcome-title">أهلاً وسهلاً 👋</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">الاسم</label>
+                    <input type="text" class="form-input" id="customer-name" placeholder="اكتب اسمك">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">رقم الجوال</label>
+                    <input type="tel" class="form-input" id="customer-phone" placeholder="05xxxxxxxx" maxlength="10">
+                </div>
+
+                <button class="continue-btn" onclick="goToMenu()">
+                    🍽️ استمرار للقائمة
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحة القائمة -->
+        <div id="menu-page" class="page">
+            <div class="customer-info">
+                <div id="display-info">معلومات العميل</div>
+            </div>
+
+            <div class="menu-section">
+                <h2 class="section-title">🍽️ القائمة</h2>
+                
+                <div class="menu-item">
+                    <div class="item-info">
+                        <h3>كبسة دجاج</h3>
+                        <p>أرز بسمتي مع دجاج طازج وخضار</p>
+                        <div class="item-price">25 ر.س</div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="changeQty('kabsa', -1)">-</button>
+                        <span class="quantity-display" id="kabsa-qty">0</span>
+                        <button class="quantity-btn" onclick="changeQty('kabsa', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="item-info">
+                        <h3>مندي لحم</h3>
+                        <p>لحم غنم طري مع أرز مندي</p>
+                        <div class="item-price">35 ر.س</div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="changeQty('mandi', -1)">-</button>
+                        <span class="quantity-display" id="mandi-qty">0</span>
+                        <button class="quantity-btn" onclick="changeQty('mandi', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="item-info">
+                        <h3>فلافل</h3>
+                        <p>6 حبات فلافل مع السلطة</p>
+                        <div class="item-price">12 ر.س</div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="changeQty('falafel', -1)">-</button>
+                        <span class="quantity-display" id="falafel-qty">0</span>
+                        <button class="quantity-btn" onclick="changeQty('falafel', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="item-info">
+                        <h3>شاورما دجاج</h3>
+                        <p>شاورما دجاج طازج مع الخضار</p>
+                        <div class="item-price">18 ر.س</div>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="changeQty('shawarma', -1)">-</button>
+                        <span class="quantity-display" id="shawarma-qty">0</span>
+                        <button class="quantity-btn" onclick="changeQty('shawarma', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notes-section">
+                <label style="color: white; font-weight: bold; margin-bottom: 8px; display: block;">💬 ملاحظات</label>
+                <textarea class="notes-input" id="order-notes" placeholder="أي ملاحظات خاصة..."></textarea>
+            </div>
+
+            <div class="order-summary">
+                <div class="total-price" id="total-price">0 ر.س</div>
+                <button class="btn btn-primary" id="review-btn" onclick="showReview()" style="display:none;">
+                    مراجعة الطلب
+                </button>
+                <div class="empty-cart" id="empty-cart">
+                    <div style="font-size: 3em;">🛒</div>
+                    <p>السلة فارغة</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة التأكيد -->
+        <div id="confirmation-page" class="page">
+            <div class="confirmation-content">
+                <h2 class="confirmation-title">📋 تأكيد الطلب</h2>
+                
+                <div class="order-review" id="order-review"></div>
+                <div class="review-total" id="review-total">0 ر.س</div>
+
+                <div class="confirmation-buttons">
+                    <button class="btn btn-primary" onclick="processPayment()">💳 تأكيد والدفع</button>
+                    <button class="btn btn-danger" onclick="goBack()">❌ رجوع</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة النجاح -->
+        <div id="success-page" class="page">
+            <div class="success-content">
+                <div class="success-icon">✅</div>
+                <div class="order-number">رقم الطلب: <span id="order-id"></span></div>
+                <h3 style="color: #00b894; margin-bottom: 20px;">تم تأكيد طلبك بنجاح!</h3>
+                <div id="receipt" style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 15px 0;"></div>
+                <p style="color: #636e72;">سيتم تحضير طلبك خلال 15-20 دقيقة</p>
+                <button class="btn btn-primary" onclick="newOrder()" style="margin-top: 20px;">طلب جديد</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // بيانات القائمة
+        const menu = {
+            kabsa: { name: 'كبسة دجاج', price: 25, qty: 0 },
+            mandi: { name: 'مندي لحم', price: 35, qty: 0 },
+            falafel: { name: 'فلافل', price: 12, qty: 0 },
+            shawarma: { name: 'شاورما دجاج', price: 18, qty: 0 }
+        };
+
+        // بيانات العميل
+        let customer = { name: '', phone: '' };
+
+        // الانتقال للقائمة
+        function goToMenu() {
+            const name = document.getElementById('customer-name').value.trim();
+            const phone = document.getElementById('customer-phone').value.trim();
+            
+            if (name.length < 2) {
+                alert('يرجى إدخال الاسم');
+                return;
+            }
+            
+            if (phone.length < 10) {
+                alert('يرجى إدخال رقم جوال صحيح');
+                return;
+            }
+            
+            customer.name = name;
+            customer.phone = phone;
+            
+            document.getElementById('display-info').innerHTML = 
+                `👤 ${name} | 📱 ${phone}`;
+            
+            showPage('menu-page');
+        }
+
+        // تغيير الكمية
+        function changeQty(item, change) {
+            menu[item].qty = Math.max(0, menu[item].qty + change);
+            updateTotal();
+        }
+
+        // تحديث المجموع
+        function updateTotal() {
+            let total = 0;
+            let hasItems = false;
+
+            Object.keys(menu).forEach(key => {
+                const item = menu[key];
+                document.getElementById(key + '-qty').textContent = item.qty;
+                total += item.price * item.qty;
+                if (item.qty > 0) hasItems = true;
+            });
+
+            document.getElementById('total-price').textContent = total + ' ر.س';
+            
+            if (hasItems) {
+                document.getElementById('review-btn').style.display = 'block';
+                document.getElementById('empty-cart').style.display = 'none';
+            } else {
+                document.getElementById('review-btn').style.display = 'none';
+                document.getElementById('empty-cart').style.display = 'block';
+            }
+        }
+
+        // عرض صفحة المراجعة
+        function showReview() {
+            let reviewHTML = `
+                <div class="review-item">
+                    <span><strong>العميل:</strong> ${customer.name}</span>
+                    <span>${customer.phone}</span>
+                </div>
+            `;
+            
+            let total = 0;
+            Object.keys(menu).forEach(key => {
+                const item = menu[key];
+                if (item.qty > 0) {
+                    const subtotal = item.price * item.qty;
+                    total += subtotal;
+                    reviewHTML += `
+                        <div class="review-item">
+                            <span>${item.name} × ${item.qty}</span>
+                            <span>${subtotal} ر.س</span>
+                        </div>
+                    `;
+                }
+            });
+
+            const notes = document.getElementById('order-notes').value;
+            if (notes.trim()) {
+                reviewHTML += `
+                    <div class="review-item">
+                        <span><strong>ملاحظات:</strong> ${notes}</span>
+                        <span></span>
+                    </div>
+                `;
+            }
+
+            document.getElementById('order-review').innerHTML = reviewHTML;
+            document.getElementById('review-total').textContent = total + ' ر.س';
+            
+            showPage('confirmation-page');
+        }
+
+        // معالجة الدفع
+        function processPayment() {
+            const orderId = 'ORD-' + Date.now().toString().slice(-6);
+            let total = 0;
+            let receiptHTML = '';
+
+            Object.keys(menu).forEach(key => {
+                const item = menu[key];
+                if (item.qty > 0) {
+                    const subtotal = item.price * item.qty;
+                    total += subtotal;
+                    receiptHTML += `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span>${item.name} × ${item.qty}</span>
+                            <span>${subtotal} ر.س</span>
+                        </div>
+                    `;
+                }
+            });
+
+            receiptHTML += `
+                <hr style="margin: 10px 0;">
+                <div style="display: flex; justify-content: space-between; font-weight: bold; color: #00b894;">
+                    <span>المجموع:</span>
+                    <span>${total} ر.س</span>
+                </div>
+            `;
+
+            document.getElementById('order-id').textContent = orderId;
+            document.getElementById('receipt').innerHTML = receiptHTML;
+            
+            // إرسال للنظام
+            sendToSystem(orderId, total);
+            
+            showPage('success-page');
+        }
+
+        // إرسال للنظام
+        function sendToSystem(orderId, total) {
+            const orderData = {
+                orderId: orderId,
+                customerName: customer.name,
+                customerPhone: customer.phone,
+                items: [],
+                total: total,
+                notes: document.getElementById('order-notes').value,
+                timestamp: new Date().toISOString()
+            };
+
+            Object.keys(menu).forEach(key => {
+                const item = menu[key];
+                if (item.qty > 0) {
+                    orderData.items.push({
+                        name: item.name,
+                        qty: item.qty,
+                        price: item.price
+                    });
+                }
+            });
+
+            console.log('إرسال الطلب:', orderData);
+            
+            // إرسال إلى Google Sheets
+            fetch('https://script.google.com/macros/s/AKfycbzlVKkEgnsC-6Sfnp8PeOy2PNBPMp6jmyFRgKXeqhu-mPsoxVXm8XgoI_gcQxhPkHSN/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('نجح الإرسال:', data);
+            })
+            .catch(error => {
+                console.error('خطأ في الإرسال:', error);
+            });
+        }
+
+        // العودة للقائمة
+        function goBack() {
+            showPage('menu-page');
+        }
+
+        // طلب جديد
+        function newOrder() {
+            Object.keys(menu).forEach(key => {
+                menu[key].qty = 0;
+            });
+            
+            customer = { name: '', phone: '' };
+            document.getElementById('customer-name').value = '';
+            document.getElementById('customer-phone').value = '';
+            document.getElementById('order-notes').value = '';
+            
+            updateTotal();
+            showPage('welcome-page');
+        }
+
+        // التنقل بين الصفحات
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // تهيئة الصفحة
+        updateTotal();
+    </script>
+</body>
+</html>
